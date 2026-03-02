@@ -582,6 +582,46 @@
       font-weight: 850;
     }
 
+    /* Hamburger button */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 200;
+      padding: 8px;
+      border: none;
+      background: none;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2.5px;
+      background: var(--k);
+      border-radius: 3px;
+      transition: .35s cubic-bezier(.77, 0, .18, 1);
+      transform-origin: center;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: translateY(7.5px) rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: translateY(-7.5px) rotate(-45deg);
+    }
+
+    /* Mobile overlay */
+    .mobile-overlay {
+      display: none;
+    }
+
     /* Responsive */
     @media (max-width: 960px) {
       .svc {
@@ -594,6 +634,61 @@
 
       header {
         padding-inline: 4vw;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      nav {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, .96);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        z-index: 150;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .35s ease;
+      }
+
+      nav.open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      nav a {
+        font-size: 26px;
+        padding: 16px 24px;
+        border-radius: 16px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity .35s ease, transform .35s ease, background .2s;
+      }
+
+      nav.open a {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      nav.open a:nth-child(1) {
+        transition-delay: .08s;
+      }
+
+      nav.open a:nth-child(2) {
+        transition-delay: .16s;
+      }
+
+      nav.open a:nth-child(3) {
+        transition-delay: .24s;
+      }
+
+      .cta {
+        margin-top: 12px;
+        font-size: 22px !important;
       }
     }
 
@@ -668,7 +763,12 @@
         <div class="mark" aria-hidden="true"></div>
         <span>iay</span>
       </a>
-      <nav>
+      <button class="hamburger" id="menuToggle" aria-label="Menú">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav id="mainNav">
         <a href="#servicios">Servicios</a>
         <a href="#como">Cómo funciona</a>
         <a href="#contacto" class="cta">Quiero implementarlo</a>
@@ -1031,6 +1131,22 @@
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
+
+    // Hamburger menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('active');
+      mainNav.classList.toggle('open');
+      document.body.style.overflow = mainNav.classList.contains('open') ? 'hidden' : '';
+    });
+    mainNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        menuToggle.classList.remove('active');
+        mainNav.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    });
   </script>
 
 </body>
